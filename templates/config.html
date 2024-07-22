@@ -1,0 +1,32 @@
+<!-- config.html -->
+<ul class="flashes" id="popUp"></ul>
+
+<!-- Basic files for all pages -->
+<link rel="stylesheet" href="/static/css/style.css">
+<script type="text/javascript" src="/static/js/base.js"></script>
+
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+    {% if category in ["error", "warning", "info", "success"] %}
+    <script>
+        popUp('{{ message }}', '{{ category }}');
+    </script>
+    {% elif category == 'data' %}
+    <script>
+        var data = "{{ message | tojson }}";
+        inputs = document.querySelectorAll('input');
+
+        for (var i = 0; i < inputs.length; i++) {
+            var input = inputs[i];
+            if (input.name in data) {
+                input.value = data[input.name];
+            }
+        }
+    </script>
+    {% endif %}
+    {% endfor %}
+{% endif %}
+{% endwith %}
